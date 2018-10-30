@@ -1,0 +1,61 @@
+def cubeRotate(parm):
+
+   
+    if not('cube' in parm):
+        return "error: cube must be specified"
+    
+    if not('face' in parm):
+        return "error: face must be specified"
+    
+    cubeFacesRotate = ['f','r','b','l','t','u']
+    
+    if not(parm['face'].lower() in cubeFacesRotate):
+        return "error: face is unknown"
+     
+    passingStatus = ['spots','crosses','full','unknown']
+    if not(cubeCheck(parm) in passingStatus):
+        return "error: not a valid cube"
+      
+    cube = parm['cube'].split(',')
+    
+    faceRotation = 'cw'
+    if parm['face'] == parm['face'].upper():
+        faceRotation = 'cc'
+
+    face = parm['face'].lower()
+    
+    frontMoves = [[42,43,44],[9,12,15],[47,46,45],[35,32,29],[42,43,44]]
+    rightMoves = [[44,41,38],[18,21,24],[53,50,47],[8,5,2],[44,41,38]]
+    backMoves = [[38,37,36],[27,30,33],[51,52,53],[17,14,11],[38,37,36]]
+    leftMoves = [[36,39,42],[0,3,6],[45,48,51,],[26,23,20],[36,39,42]]
+    topMoves = [[18,19,20],[9,10,11],[0,1,2],[27,28,29],[18,19,20]]
+    underMoves = [[6,7,8,],[15,16,17],[24,25,26],[33,34,35],[6,7,8,]]
+
+    facesRotate = {'f':frontMoves, 'r':rightMoves, 'b':backMoves, 'l':leftMoves, 't':topMoves, 'u':underMoves}
+    
+    baseMoves = [[0,1,2],[2,5,8],[8,7,6],[6,3,0],[0,1,2]]
+    
+    cubeDuplicate = list(cube)
+
+    rotate = {'cc': [[0,4],[0,1]], 'cw': [[0,4],[1,0]]}
+
+  
+    ranges, TempNum = rotate[faceRotation]
+    minRange, maxRange = ranges
+    firstNum, secondNum = TempNum
+    
+    sideLocations = facesRotate[face]
+
+
+    for i in range(minRange,maxRange):
+        for j in range(0,3):
+            cubeDuplicate[sideLocations[i+firstNum][j]] = cube[sideLocations[i + secondNum][j]]
+
+
+    faceStart = {'f':0, 'r':9, 'b':18, 'l':27, 't':36, 'u':45}
+    firstSpot = faceStart[face]
+    for i in range(minRange,maxRange):
+        for j in range(0,3):
+            cubeDuplicate[baseMoves[i+firstNum][j] + firstSpot] = cube[baseMoves[i + secondNum][j] + firstSpot]
+
+    return cubeDuplicate
